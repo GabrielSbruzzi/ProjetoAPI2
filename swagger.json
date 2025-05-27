@@ -1,0 +1,140 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Trabalho API",
+      "version": "1.0.0",
+      "description": "Documentação da API de usuários, tarefas e autenticação."
+    },
+    "paths": {
+      "/users": {
+        "get": {
+          "summary": "Listar todos os usuários",
+          "responses": {
+            "200": {
+              "description": "Lista de usuários retornada com sucesso",
+              "content": {
+                "application/json": {
+                  "example": [
+                    {
+                      "id": "uuid-1234",
+                      "nome": "João",
+                      "email": "joao@exemplo.com"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Criar novo usuário",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nome": { "type": "string" },
+                    "email": { "type": "string" }
+                  },
+                  "required": ["nome", "email"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Usuário criado com sucesso"
+            },
+            "400": {
+              "description": "Dados inválidos"
+            }
+          }
+        }
+      },
+      "/tasks": {
+        "get": {
+          "summary": "Listar todas as tarefas",
+          "responses": {
+            "200": {
+              "description": "Lista de tarefas retornada com sucesso",
+              "content": {
+                "application/json": {
+                  "example": [
+                    {
+                      "id": "uuid-1234",
+                      "titulo": "Tarefa Exemplo",
+                      "descricao": "Descrição da tarefa",
+                      "usuarioId": "uuid-usuario"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Criar nova tarefa",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "titulo": { "type": "string" },
+                    "descricao": { "type": "string" },
+                    "usuarioId": { "type": "string" }
+                  },
+                  "required": ["titulo", "descricao", "usuarioId"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Tarefa criada com sucesso"
+            },
+            "400": {
+              "description": "Dados inválidos"
+            }
+          }
+        }
+      },
+      "/auth/login": {
+        "post": {
+          "summary": "Autenticar e retornar um token JWT",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": { "type": "string" },
+                    "senha": { "type": "string" }
+                  },
+                  "required": ["email", "senha"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Token JWT retornado com sucesso"
+            },
+            "401": {
+              "description": "Credenciais inválidas"
+            }
+          }
+        }
+      }
+    }
+  }
+  
