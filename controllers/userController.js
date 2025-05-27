@@ -4,7 +4,7 @@ const userService = require('../service/userService');
 function listar(req, res) {
   try {
     const users = userService.listar();
-    res.json(users);  // Retorna os usuários
+    res.json(users);
   } catch (e) {
     res.status(e.id || 500).json({ msg: e.msg || 'Erro ao listar usuários' });
   }
@@ -14,7 +14,7 @@ function listar(req, res) {
 function inserir(req, res) {
   try {
     const user = userService.inserir(req.body);
-    res.status(201).json(user);  // Retorna o usuário inserido
+    res.status(201).json(user);
   } catch (e) {
     res.status(e.id || 500).json({ msg: e.msg || 'Erro ao criar usuário' });
   }
@@ -27,20 +27,20 @@ function buscarPorId(req, res) {
     if (!user) {
       return res.status(404).json({ msg: 'Usuário não encontrado' });
     }
-    res.json(user);  // Retorna o usuário encontrado
+    res.json(user);
   } catch (e) {
     res.status(e.id || 500).json({ msg: e.msg || 'Erro ao buscar usuário' });
   }
 }
 
-// Atualizar usuário
-function atualizar(req, res) {
+// ✅ Atualizar usuário (corrigido para async)
+async function atualizar(req, res) {
   try {
-    const user = userService.atualizar(req.params.id, req.body);
+    const user = await userService.atualizar(req.params.id, req.body);
     if (!user) {
       return res.status(404).json({ msg: 'Usuário não encontrado para atualizar' });
     }
-    res.json(user);  // Retorna o usuário atualizado
+    res.json(user);
   } catch (e) {
     res.status(e.id || 500).json({ msg: e.msg || 'Erro ao atualizar usuário' });
   }
@@ -53,7 +53,7 @@ function deletar(req, res) {
     if (!user) {
       return res.status(404).json({ msg: 'Usuário não encontrado para deletar' });
     }
-    res.json(user);  // Retorna o usuário deletado
+    res.json(user);
   } catch (e) {
     res.status(e.id || 500).json({ msg: e.msg || 'Erro ao deletar usuário' });
   }
@@ -63,6 +63,6 @@ module.exports = {
   listar, 
   inserir, 
   buscarPorId, 
-  atualizar, 
+  atualizar,  // <- agora é async
   deletar 
 };

@@ -31,7 +31,7 @@ Este projeto é uma API desenvolvida em **Node.js** com **Express.js**, que perm
 1. Clone o repositório:
 
 ```bash
-git clone 
+git clone https://github.com/GabrielSbruzzi/Projeto-API.git
 ````
 
 2. Instale as dependências:
