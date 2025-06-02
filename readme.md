@@ -1,4 +1,3 @@
-````markdown
 # 🚀 API RESTful de Usuários e Tarefas com JWT
 
 Este projeto é uma API desenvolvida em **Node.js** com **Express.js**, que permite o cadastro de usuários, autenticação via JWT e gerenciamento de tarefas. Os dados são mantidos em memória.
@@ -43,7 +42,7 @@ npm install
 3. Inicie o servidor:
 
 ```bash
-npm start
+node server.js
 ```
 
 Por padrão, o servidor será iniciado em `http://localhost:3000`.
@@ -79,8 +78,10 @@ http://localhost:3000/api-docs
 ├── repository/        # Simula banco de dados (em memória)
 ├── middleware/        # Autenticação JWT
 ├── routes/            # Arquivos de rotas
+├── tests/             # Testes
 ├── swagger.json       # Configuração da documentação
 ├── server.js          # Inicialização da aplicação
+├── app.js             # Rotas públicas e Protegidas
 └── README.md
 ```
 

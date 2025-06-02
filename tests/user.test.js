@@ -6,6 +6,7 @@ describe('Testes de Usuários', () => {
     const res = await request(app)
       .post('/users')
       .send({ nome: 'Teste', email: 'teste@email.com', senha: '123456' });
+
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('id');
   });
@@ -14,6 +15,7 @@ describe('Testes de Usuários', () => {
     const res = await request(app)
       .post('/users')
       .send({ nome: '', email: 'invalido' });
+
     expect(res.statusCode).toEqual(400);
   });
 });

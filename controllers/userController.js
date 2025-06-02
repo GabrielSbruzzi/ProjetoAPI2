@@ -11,9 +11,16 @@ function listar(req, res) {
 }
 
 // Inserir usuário
-function inserir(req, res) {
+async function inserir(req, res) {
+  const { nome, email, senha } = req.body;
+
+  // Validação simples dos dados
+  if (!nome || !email || !senha) {
+    return res.status(400).json({ id: 400, msg: "Usuário com dados inválidos" });
+  }
+
   try {
-    const user = userService.inserir(req.body);
+    const user = await userService.inserir(req.body);
     res.status(201).json(user);
   } catch (e) {
     res.status(e.id || 500).json({ msg: e.msg || 'Erro ao criar usuário' });
@@ -33,7 +40,7 @@ function buscarPorId(req, res) {
   }
 }
 
-// ✅ Atualizar usuário (corrigido para async)
+// Atualizar usuário
 async function atualizar(req, res) {
   try {
     const user = await userService.atualizar(req.params.id, req.body);
@@ -63,6 +70,6 @@ module.exports = {
   listar, 
   inserir, 
   buscarPorId, 
-  atualizar,  // <- agora é async
+  atualizar,
   deletar 
 };

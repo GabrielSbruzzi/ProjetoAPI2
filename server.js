@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const swaggerUi = require('swagger-ui-express');
 
-const swaggerSpec = require('./swagger.json');  // Verifique o caminho correto do seu arquivo Swagger JSON
+const swaggerSpec = require('./swagger.json');  // Verifique o caminho correto do arquivo Swagger JSON
 
 // Middleware para processar o corpo da requisição como JSON
 app.use(express.json());

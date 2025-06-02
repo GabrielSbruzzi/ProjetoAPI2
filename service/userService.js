@@ -8,17 +8,26 @@ function listar() {
 }
 
 // Inserir novo usuário
-function inserir(user) {
-  if (!user || !user.nome || !user.email || !user.senha) {
+async function inserir(user) {
+  if (
+    !user || 
+    typeof user.nome !== 'string' || !user.nome.trim() ||
+    typeof user.email !== 'string' || !user.email.trim() ||
+    typeof user.senha !== 'string' || !user.senha.trim()
+  ) {
     throw { id: 400, msg: "Usuário com dados inválidos" };
   }
 
-  // Criptografando a senha
-  const hashed = bcrypt.hashSync(user.senha, 8);
+  const existente = userRepository.buscarPorEmail(user.email);
+  if (existente) {
+    throw { id: 409, msg: "E-mail já cadastrado" };
+  }
+
+  const hashed = await bcrypt.hash(user.senha, 10);
   const novoUsuario = {
     id: uuidv4(),
-    nome: user.nome,
-    email: user.email,
+    nome: user.nome.trim(),
+    email: user.email.trim(),
     senha: hashed
   };
 
@@ -32,16 +41,18 @@ function buscarPorId(id) {
   return user;
 }
 
-// Buscar por email
+// Buscar por e-mail
 function buscarPorEmail(email) {
-  const user = userRepository.buscarPorEmail(email);
-  if (!user) throw { id: 404, msg: "Usuário não encontrado" };
-  return user;
+  return userRepository.buscarPorEmail(email);
 }
 
-// ✅ Atualizar usuário (agora assíncrona e trata hash de senha)
+// Atualizar usuário
 async function atualizar(id, dados) {
-  if (!dados || !dados.nome || !dados.email) {
+  if (
+    !dados || 
+    typeof dados.nome !== 'string' || !dados.nome.trim() ||
+    typeof dados.email !== 'string' || !dados.email.trim()
+  ) {
     throw { id: 400, msg: "Dados inválidos para atualização" };
   }
 
@@ -49,7 +60,12 @@ async function atualizar(id, dados) {
     dados.senha = await bcrypt.hash(dados.senha, 10);
   }
 
-  const atualizado = userRepository.atualizar(id, dados);
+  const atualizado = userRepository.atualizar(id, {
+    nome: dados.nome.trim(),
+    email: dados.email.trim(),
+    senha: dados.senha
+  });
+
   if (!atualizado) throw { id: 404, msg: "Usuário não encontrado" };
 
   return atualizado;
@@ -59,7 +75,6 @@ async function atualizar(id, dados) {
 function deletar(id) {
   const deletado = userRepository.deletar(id);
   if (!deletado) throw { id: 404, msg: "Usuário não encontrado" };
-
   return deletado;
 }
 
