@@ -1,9 +1,9 @@
 const userService = require('../service/userService');
 
 // Listar usuários
-function listar(req, res) {
+async function listar(req, res) {
   try {
-    const users = userService.listar();
+    const users = await userService.listar();
     res.json(users);
   } catch (e) {
     res.status(e.id || 500).json({ msg: e.msg || 'Erro ao listar usuários' });
@@ -28,9 +28,9 @@ async function inserir(req, res) {
 }
 
 // Buscar usuário por ID
-function buscarPorId(req, res) {
+async function buscarPorId(req, res) {
   try {
-    const user = userService.buscarPorId(req.params.id);
+    const user = await userService.buscarPorId(req.params.id);
     if (!user) {
       return res.status(404).json({ msg: 'Usuário não encontrado' });
     }
@@ -54,9 +54,9 @@ async function atualizar(req, res) {
 }
 
 // Deletar usuário
-function deletar(req, res) {
+async function deletar(req, res) {
   try {
-    const user = userService.deletar(req.params.id);
+    const user = await userService.deletar(req.params.id);
     if (!user) {
       return res.status(404).json({ msg: 'Usuário não encontrado para deletar' });
     }

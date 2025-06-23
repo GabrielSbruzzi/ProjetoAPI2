@@ -7,11 +7,22 @@ function listar() {
 }
 
 function inserir(task) {
-  if (!task || !task.nome || !task.usuarioId) {  // Validação de dados obrigatórios
+  if (!task || !task.nome || !task.usuarioId) {
     throw { id: 400, msg: "Tarefa com dados inválidos" };
   }
-  const novaTask = { id: uuidv4(), nome: task.nome, descricao: task.descricao, usuarioId: task.usuarioId };
-  return taskRepository.inserir(novaTask);  // Insere a nova tarefa no repositório
+
+  const statusValidos = ['pendente', 'fazendo', 'concluída'];
+  const status = task.status && statusValidos.includes(task.status) ? task.status : 'pendente';
+
+  const novaTask = { 
+    id: uuidv4(), 
+    nome: task.nome, 
+    descricao: task.descricao, 
+    usuarioId: task.usuarioId,
+    status
+  };
+
+  return taskRepository.inserir(novaTask);
 }
 
 function buscarPorId(id) {
@@ -21,9 +32,15 @@ function buscarPorId(id) {
 }
 
 function atualizar(id, dados) {
-  if (!dados || !dados.nome) {  // Verifica se os dados são válidos para atualização
+  if (!dados || (!dados.nome && !dados.descricao && !dados.status)) {
     throw { id: 400, msg: "Dados inválidos para atualização" };
   }
+
+  const statusValidos = ['pendente', 'fazendo', 'concluída'];
+  if (dados.status && !statusValidos.includes(dados.status)) {
+    throw { id: 400, msg: "Status inválido" };
+  }
+
   const atualizado = taskRepository.atualizar(id, dados);
   if (!atualizado) throw { id: 404, msg: "Tarefa não encontrada" };
   return atualizado;

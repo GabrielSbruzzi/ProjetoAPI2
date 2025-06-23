@@ -1,6 +1,6 @@
-# 🚀 API RESTful de Usuários e Tarefas com JWT
+# 🚀 API RESTful de Usuários e Tarefas com JWT e PostgreSQL
 
-Este projeto é uma API desenvolvida em **Node.js** com **Express.js**, que permite o cadastro de usuários, autenticação via JWT e gerenciamento de tarefas. Os dados são mantidos em memória.
+Este projeto é uma API desenvolvida em **Node.js** com **Express.js**, que permite o cadastro de usuários, autenticação via JWT e gerenciamento de tarefas. Os dados agora são armazenados em um **banco de dados PostgreSQL**.
 
 ---
 
@@ -10,6 +10,7 @@ Este projeto é uma API desenvolvida em **Node.js** com **Express.js**, que perm
 - ✅ Login com autenticação JWT
 - ✅ CRUD de tarefas (Create, Read, Update, Delete)
 - ✅ Proteção de rotas com middleware JWT
+- ✅ Integração com banco de dados PostgreSQL
 - ✅ Documentação com Swagger UI
 
 ---
@@ -18,10 +19,13 @@ Este projeto é uma API desenvolvida em **Node.js** com **Express.js**, que perm
 
 - Node.js
 - Express.js
+- PostgreSQL
+- Sequelize (ORM)
 - bcryptjs (criptografia de senha)
 - jsonwebtoken (JWT)
 - uuid (gerador de ID único)
 - swagger-ui-express
+- dotenv (variáveis de ambiente)
 
 ---
 

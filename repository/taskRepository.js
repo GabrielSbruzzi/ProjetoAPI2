@@ -1,42 +1,71 @@
-// repository/taskRepository.js
-let tasks = [];  // Um array simples em memória, substitua isso por um banco de dados real, se necessário
+const pool = require('../db');
 
-function listar() {
-  return tasks;  // Retorna todas as tasks
+function mapDbTaskToApi(task) {
+  return {
+    id: task.id,
+    nome: task.nome,
+    descricao: task.descricao,
+    usuarioId: task.usuario_id, 
+    status: task.status
+  };
 }
 
-function inserir(task) {
-  tasks.push(task);  // Insere a tarefa no array
-  return task;
+async function listar() {
+  const result = await pool.query('SELECT * FROM tasks');
+  return result.rows.map(mapDbTaskToApi);
 }
 
-function buscarPorId(id) {
-  return tasks.find(task => task.id === id);  // Retorna uma task pelo ID
+async function inserir(task) {
+  const { id, nome, descricao, usuarioId, status } = task;
+  const result = await pool.query(
+    `INSERT INTO tasks (id, nome, descricao, usuario_id, status) 
+     VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+    [id, nome, descricao, usuarioId, status || 'pendente']
+  );
+  return mapDbTaskToApi(result.rows[0]);
 }
 
-function atualizar(id, dados) {
-  let taskIndex = tasks.findIndex(task => task.id === id);
-  if (taskIndex === -1) return null;
-  tasks[taskIndex] = { ...tasks[taskIndex], ...dados };
-  return tasks[taskIndex];
+async function buscarPorId(id) {
+  const result = await pool.query('SELECT * FROM tasks WHERE id = $1', [id]);
+  if (!result.rows[0]) return null;
+  return mapDbTaskToApi(result.rows[0]);
 }
 
-function deletar(id) {
-  let taskIndex = tasks.findIndex(task => task.id === id);
-  if (taskIndex === -1) return null;
-  const deletedTask = tasks.splice(taskIndex, 1);
-  return deletedTask[0];
+async function atualizar(id, dados) {
+  const fields = [];
+  const values = [];
+  let idx = 1;
+
+  for (const key in dados) {
+    const column = key === 'usuarioId' ? 'usuario_id' : key;
+    fields.push(`${column} = $${idx}`);
+    values.push(dados[key]);
+    idx++;
+  }
+  values.push(id);
+
+  const query = `UPDATE tasks SET ${fields.join(', ')} WHERE id = $${idx} RETURNING *`;
+  const result = await pool.query(query, values);
+  if (!result.rows[0]) return null;
+  return mapDbTaskToApi(result.rows[0]);
 }
 
-function listarPorUsuario(userId) {
-  return tasks.filter(task => task.usuarioId === userId);  // Retorna tarefas de um usuário específico
+async function deletar(id) {
+  const result = await pool.query('DELETE FROM tasks WHERE id = $1 RETURNING *', [id]);
+  if (!result.rows[0]) return null;
+  return mapDbTaskToApi(result.rows[0]);
+}
+
+async function listarPorUsuario(userId) {
+  const result = await pool.query('SELECT * FROM tasks WHERE usuario_id = $1', [userId]);
+  return result.rows.map(mapDbTaskToApi);
 }
 
 module.exports = { 
-    listar, 
-    inserir, 
-    buscarPorId, 
-    atualizar, 
-    deletar, 
-    listarPorUsuario 
+  listar, 
+  inserir, 
+  buscarPorId, 
+  atualizar, 
+  deletar, 
+  listarPorUsuario 
 };

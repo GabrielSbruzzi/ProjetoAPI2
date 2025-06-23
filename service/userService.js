@@ -18,7 +18,8 @@ async function inserir(user) {
     throw { id: 400, msg: "Usuário com dados inválidos" };
   }
 
-  const existente = userRepository.buscarPorEmail(user.email);
+  // Use await aqui porque buscarPorEmail é async
+  const existente = await userRepository.buscarPorEmail(user.email);
   if (existente) {
     throw { id: 409, msg: "E-mail já cadastrado" };
   }
@@ -35,15 +36,15 @@ async function inserir(user) {
 }
 
 // Buscar por ID
-function buscarPorId(id) {
-  const user = userRepository.buscarPorId(id);
+async function buscarPorId(id) {
+  const user = await userRepository.buscarPorId(id);
   if (!user) throw { id: 404, msg: "Usuário não encontrado" };
   return user;
 }
 
 // Buscar por e-mail
-function buscarPorEmail(email) {
-  return userRepository.buscarPorEmail(email);
+async function buscarPorEmail(email) {
+  return await userRepository.buscarPorEmail(email);
 }
 
 // Atualizar usuário
@@ -60,7 +61,7 @@ async function atualizar(id, dados) {
     dados.senha = await bcrypt.hash(dados.senha, 10);
   }
 
-  const atualizado = userRepository.atualizar(id, {
+  const atualizado = await userRepository.atualizar(id, {
     nome: dados.nome.trim(),
     email: dados.email.trim(),
     senha: dados.senha
@@ -70,6 +71,7 @@ async function atualizar(id, dados) {
 
   return atualizado;
 }
+
 
 // Deletar usuário
 function deletar(id) {
