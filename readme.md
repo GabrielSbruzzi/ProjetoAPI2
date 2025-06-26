@@ -86,6 +86,7 @@ http://localhost:3000/api-docs
 ├── swagger.json       # Configuração da documentação
 ├── server.js          # Inicialização da aplicação
 ├── app.js             # Rotas públicas e Protegidas
+├── db.js             # Conexão com o Banco de Dados
 └── README.md
 ```
 
